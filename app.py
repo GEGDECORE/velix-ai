@@ -1,96 +1,106 @@
 import streamlit as st
 import pandas as pd
-from pymongo import MongoClient
 
-# Configuração da Página - Estilo Profissional
-st.set_page_config(page_title="VELIX AI - Central de Vendas", layout="wide", page_icon="🚀")
+# Configuração de Interface de Alta Performance
+st.set_page_config(page_title="VELIX AI | Business Intelligence", layout="wide", page_icon="📈")
 
-# Estilização Customizada (CSS)
+# Estilização DARK MODE PROFISSIONAL (Preto e Azul Royal)
 st.markdown("""
     <style>
-    .main { background-color: #f5f7f9; }
-    .stButton>button { width: 100%; border-radius: 5px; background-color: #004aad; color: white; }
-    .sidebar .sidebar-content { background-image: linear-gradient(#2e3192, #1bffff); color: white; }
-    h1 { color: #004aad; }
+    /* Fundo Total Preto */
+    .stApp {
+        background-color: #0E1117;
+        color: #FFFFFF;
+    }
+    /* Menu Lateral Dark */
+    section[data-testid="stSidebar"] {
+        background-color: #161B22 !important;
+        border-right: 1px solid #30363D;
+    }
+    /* Títulos e Métricas */
+    h1, h2, h3 {
+        color: #58A6FF !important;
+        font-family: 'Inter', sans-serif;
+    }
+    .stMetric {
+        background-color: #1C2128;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #30363D;
+    }
+    /* Botões de Ação */
+    .stButton>button {
+        background-color: #238636;
+        color: white;
+        border: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #2EA043;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- MENU LATERAL (Idêntico à sua foto) ---
-st.sidebar.image("https://via.placeholder.com/150?text=VELIX+AI", width=120) # Coloque seu logo aqui depois
-st.sidebar.title("Menu VELIX AI")
+# --- NAVEGAÇÃO E LOGO ---
+st.sidebar.markdown(f"<h1 style='text-align: center; color: white !important;'>VELIX AI</h1>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='text-align: center; font-size: 0.8em;'>SISTEMA DE ALAVANCAGEM DE VENDAS</p>", unsafe_allow_html=True)
+st.sidebar.write("---")
+
 menu = st.sidebar.radio(
-    "Navegação",
-    ["🏠 Painel de Controle", "💰 Vendas IA", "🎥 Vídeo IA", "👤 Avatar IA", "📢 Anúncios (ADS)", "📞 Atendimento", "📊 Resultados"]
+    "Navegação Estratégica",
+    ["📊 Dashboard de Performance", "🔍 Algoritmo de Topo", "🎥 Produção IA", "📢 Gestão de ADS", "📋 Ordens de Serviço", "⚙️ Configurações"]
 )
 
-st.sidebar.info(f"Logada como: *Daniele Xavier*")
+# --- LÓGICA DAS TELAS (SEM NOMES PESSOAIS NA TELA PRINCIPAL) ---
 
-# --- CONEXÃO MONGODB (Seu motor de dados) ---
-# Substitua pela sua string de conexão real quando tiver
-# client = MongoClient("SUA_URL_DO_MONGODB")
-# db = client.velix_db
-
-# --- LÓGICA DAS TELAS ---
-
-if menu == "🏠 Painel de Controle":
-    st.title("🚀 Central de Vendas Inteligente")
-    st.subheader("Bem-vinda de volta, Daniele Xavier")
+if menu == "📊 Dashboard de Performance":
+    st.markdown("<h1>Painel de Controle Estratégico</h1>", unsafe_allow_html=True)
+    st.write("Monitoramento em tempo real dos seus ativos digitais.")
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Vendas Hoje", "R$ 1.250,00", "+12%")
-    col2.metric("Alcance de Anúncios", "45.200", "+5%")
-    col3.metric("Conversão", "4.8%", "+0.2%")
-    
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Volume de Vendas", "R$ 42.850", "+15%")
+    with col2:
+        st.metric("CTR de Anúncios", "6.2%", "+1.4%")
+    with col3:
+        st.metric("ROI Médio", "4.2x", "+0.5x")
+    with col4:
+        st.metric("Posição Média", "1º Lugar", "Estável")
+
     st.write("---")
-    st.write("### 📈 Monitoramento em Tempo Real")
-    st.info("O algoritmo está monitorando 15 produtos da sua carteira neste momento.")
+    st.subheader("📈 Gráfico de Escala de Mercado")
+    chart_data = pd.DataFrame({'Market Share': [10, 15, 12, 25, 40, 55, 78]})
+    st.area_chart(chart_data)
 
-elif menu == "💰 Vendas IA":
-    st.title("💰 Estratégia de Vendas e Precificação")
-    st.write("### Otimizador de Topo de Busca")
+elif menu == "🔍 Algoritmo de Topo":
+    st.markdown("<h1>Otimizador de Marketplace</h1>", unsafe_allow_html=True)
+    st.info("O algoritmo analisa o preço do concorrente e ajusta sua oferta para o topo em milissegundos.")
     
-    with st.expander("Calcular Preço para Vencer Concorrente", expanded=True):
-        preco_concorrente = st.number_input("Qual o preço do concorrente no Marketplace?", value=49.00)
-        trava_lucro = st.number_input("Qual seu preço mínimo de lucro (Trava)?", value=40.00)
-        
-        if preco_concorrente > trava_lucro:
-            sugestao = preco_concorrente - 0.50
-            st.success(f"✅ Sugestão VELIX: Altere seu preço para *R$ {sugestao:.2f}* para ficar no topo.")
+    c1, c2 = st.columns(2)
+    with c1:
+        concorrente = st.number_input("Preço Atual do Concorrente (R$)", value=49.00)
+    with c2:
+        custo = st.number_input("Seu Custo de Operação (R$)", value=35.00)
+    
+    if st.button("Executar Reajuste de Topo"):
+        sugestao = concorrente - 0.50
+        if sugestao > custo:
+            st.success(f"Estratégia Aplicada: Novo preço ajustado para *R$ {sugestao:.2f}*. Você está no topo!")
         else:
-            st.warning("⚠️ Atenção: O preço do concorrente está abaixo da sua trava de lucro. Não baixe mais!")
+            st.error("Preço do concorrente abaixo da sua margem de segurança.")
 
-    st.write("### 🧠 SEO e Palavras-Chave de Ouro")
-    st.text_area("Descreva o produto para gerar palavras-chave que o algoritmo ama:")
-    if st.button("Gerar Palavras-Chave de Alta Performance"):
-        st.write("🔍 Sugestão: Melhor custo-benefício, Oferta Relâmpago, Entrega Rápida, Garantia Total")
+elif menu == "📋 Ordens de Serviço":
+    st.markdown("<h1>Gestão de OS</h1>", unsafe_allow_html=True)
+    with st.form("os_form"):
+        st.text_input("Cliente / Empresa")
+        st.selectbox("Serviço", ["Consultoria SEO", "Campanha ADS", "Produção de Vídeo IA", "Otimização de Preços"])
+        st.date_input("Data de Entrega")
+        if st.form_submit_button("Gerar Ordem de Serviço Profissional"):
+            st.info("Gerando documento...")
 
-elif menu == "🎥 Vídeo IA":
-    st.title("🎥 Vídeo IA para Anúncios")
-    st.write("Crie vídeos rápidos para Reels e TikTok que convertem.")
-    st.file_uploader("Suba o vídeo do seu produto aqui")
-    st.button("Adicionar Legendas Magnéticas e Voz de IA")
-
-elif menu == "👤 Avatar IA":
-    st.title("👤 Avatar Humano Apresentador")
-    st.write("Transforme seu roteiro em um vídeo com apresentador realista.")
-    roteiro = st.text_area("Escreva o que o avatar deve falar:")
-    st.select_slider("Escolha o tom de voz:", options=["Vendedor", "Autoridade", "Amigável"])
-    st.button("Gerar Vídeo de Apresentação")
-
-elif menu == "📢 Anúncios (ADS)":
-    st.title("📢 Gerador de Campanhas")
-    st.write("Crie criativos para Meta e Google Ads em segundos.")
-    publico = st.multiselect("Público Alvo:", ["Empresários", "Estética", "Vendas Online", "Autônomos"])
-    if st.button("Criar Copy para Anúncio"):
-        st.code("⚠️ ÚLTIMAS VAGAS: Pare de perder clientes para o preço do vizinho. Com a VELIX AI...")
-
-elif menu == "📊 Resultados":
-    st.title("📊 Relatórios de Performance")
-    # Exemplo de gráfico
-    chart_data = pd.DataFrame({'Vendas': [10, 20, 15, 30, 45, 50, 80]})
-    st.line_chart(chart_data)
-    st.write("Seu crescimento nos últimos 7 dias foi de *40%* acima da média do setor.")
-
-# Rodapé profissional
-st.write("---")
-st.caption("VELIX AI - Alta Performance em Vendas | Desenvolvido para Daniele Xavier")
+# --- RODAPÉ DISCRETO ---
+st.sidebar.markdown("---")
+st.sidebar.caption("Sessão Restrita")
+# O seu nome fica apenas aqui, bem discreto, para não atrapalhar apresentações aos clientes
+st.sidebar.markdown("<p style='font-size: 0.7em; color: gray;'>Operadora: Daniele Xavier</p>", unsafe_allow_html=True)
