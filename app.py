@@ -1,123 +1,67 @@
 import streamlit as st
-import sqlite3
-from openai import OpenAI
-import requests
-# --- FUNÇÃO PARA CRIAR O BANCO SE ELE NÃO EXISTIR ---
-def inicializar_banco():
-    with sqlite3.connect('usuarios.db') as conn:
-        cursor = conn.cursor()
-        # Cria a tabela consumidor com os campos necessários
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS consumidor (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT NOT NULL,
-                cpf TEXT UNIQUE NOT NULL,
-                status_financeiro TEXT
-            )
-        """)
-        # Adiciona um dado de teste se o banco estiver vazio
-        cursor.execute("SELECT COUNT(*) FROM consumidor")
-        if cursor.fetchone()[0] == 0:
-            cursor.execute("INSERT INTO consumidor (nome, cpf, status_financeiro) VALUES (?, ?, ?)", 
-                           ("Cliente Exemplo Enterprise", "35399224828", "Ativo / Premium"))
-        conn.commit()
+from pymongo import MongoClient
+from datetime import datetime
 
-# Chame a função para preparar o terreno
-inicializar_banco()
+# Configuração de Conexão com o MongoDB
+# Já configurado com seu usuário e senha fornecidos
+uri = "mongodb+srv://danixavier27_db_user:fDPiWGsXFr2DTUbd@cluster0.ukv584f.mongodb.net/?appName=Cluster0"
+client = MongoClient(uri)
+db = client['venda_flow_db']
+collection = db['vendas']
 
-# --- CONFIGURAÇÕES DO APP (Seus dados reais das fotos) ---
-CLIENT_ID = "8642952419393317"
-CLIENT_SECRET = "puiFotSx7q7I20kcXe3Bg5T6fMKARCQQ"
-REDIRECT_URI = "https://localhost:8501."
+# Configuração da Página do Streamlit
+st.set_page_config(page_title="VendaFlow AI", page_icon="🚀", layout="wide")
 
-# --- DESIGN CORPORATIVO VELIX-AI ---
-st.set_page_config(page_title="Velix-AI | Enterprise Intelligence", layout="wide")
+st.title("🚀 VendaFlow AI - Gestão de Alta Performance")
+st.subheader("Bem-vinda de volta, Daniele Xavier")
 
-st.markdown("""
-    <style>
-    .stApp { background-color: #000000; color: #ffffff; }
-    .main-card { 
-        padding: 20px; border-radius: 15px; 
-        background: #0a0a0a; border: 1px solid #333;
-        box-shadow: 0px 4px 15px rgba(0, 242, 255, 0.1);
-    }
-    .stButton>button { 
-        background: linear-gradient(90deg, #00f2ff, #7000ff); 
-        color: white; border: none; font-weight: bold; width: 100%;
-        border-radius: 10px; height: 45px;
-    }
-    input { background-color: #1a1a1a !important; color: white !important; border: 1px solid #333 !important; }
-    .ai-box { padding: 15px; border-left: 4px solid #7000ff; background: #0d0d0d; margin-top: 10px; }
-    </style>
-    """, unsafe_allow_html=True)
+# Menu Lateral
+menu = ["Registrar Venda", "Histórico de Vendas", "Dashboard"]
+choice = st.sidebar.selectbox("Navegação", menu)
 
-# --- BARRA LATERAL ---
-with st.sidebar:
-    st.image("logo.png", width=180)
-    st.title("🛡️ Central de Chaves")
-    openai_key = st.text_input("OpenAI API Key", type="password")
-    st.markdown("---")
-    st.caption("ID do App: " + CLIENT_ID)
-
-# --- CABEÇALHO ---
-st.title("💼 Velix-AI | Enterprise Dashboard")
-
-# --- 1. MÓDULO DE CONEXÃO MERCADO LIVRE ---
-with st.expander("🔗 Integração de Marketplace", expanded=True):
-    auth_url = f"https://auth.mercadolivre.com.br/authorization?response_type=code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}"
+if choice == "Registrar Venda":
+    st.header("📝 Nova Venda")
     
-    col_a, col_b = st.columns([2, 1])
-    with col_a:
-        st.info("Conecte a Velix-AI à conta corporativa para análise de grandes fluxos.")
-    with col_b:
-        st.markdown(f'<a href="{auth_url}" target="_blank"><button style="width:100%; cursor:pointer; background-color:#00f2ff; border-radius:10px; padding:10px;">Conectar Mercado Livre</button></a>', unsafe_allow_html=True)
+    with st.form("form_venda"):
+        cliente = st.text_input("Nome do Cliente")
+        servico = st.selectbox("Serviço", ["Terapia de Reintegração", "Mentoria de Alta Performance", "Combo Destrave", "Outros"])
+        valor = st.number_input("Valor (R$)", min_value=0.0, format="%.2f")
+        data = st.date_input("Data da Venda", datetime.now())
+        
+        submit = st.form_submit_button("Salvar Venda")
+        
+        if submit:
+            if cliente and valor > 0:
+                venda_data = {
+                    "cliente": cliente,
+                    "servico": servico,
+                    "valor": valor,
+                    "data": str(data),
+                    "timestamp": datetime.now()
+                }
+                collection.insert_one(venda_data)
+                st.success(f"Venda para {cliente} registrada com sucesso!")
+            else:
+                st.error("Por favor, preencha o nome do cliente e o valor.")
+
+elif choice == "Histórico de Vendas":
+    st.header("📊 Histórico de Vendas")
+    vendas = list(collection.find().sort("timestamp", -1))
     
-    codigo_retorno = st.text_input("Cole aqui o código (code) retornado na URL:")
+    if vendas:
+        for v in vendas:
+            with st.expander(f"{v['cliente']} - R$ {v['valor']}"):
+                st.write(f"*Serviço:* {v['servico']}")
+                st.write(f"*Data:* {v['data']}")
+    else:
+        st.info("Nenhuma venda registrada ainda.")
 
-# --- 2. MÓDULO DE BUSCA E INTELIGÊNCIA VENDAFLOW ---
-st.markdown("---")
-st.subheader("📊 Análise de Performance")
-
-col1, col2 = st.columns([1, 2])
-
-with col1:
-    identificador = st.text_input("CPF ou CNPJ do Cliente")
-    executar = st.button("EXECUTAR CONSULTA INTELIGENTE")
-
-if executar:
-    if identificador:
-        try:
-            with sqlite3.connect('usuarios.db') as conn:
-                cursor = conn.cursor()
-                cursor.execute("SELECT nome, status_financeiro FROM consumidor WHERE cpf = ?", (identificador,))
-                res = cursor.fetchone()
-                
-                if res:
-                    nome, status = res
-                    with col2:
-                        st.markdown(f"""
-                        <div class="main-card">
-                            <h4 style="color:#00f2ff;">Registro Localizado</h4>
-                            <p><b>Titular:</b> {nome}</p>
-                            <p><b>Status:</b> {status}</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        if openai_key:
-                            client = OpenAI(api_key=openai_key)
-                            with st.spinner("VendaFlow AI gerando estratégia..."):
-                                response = client.chat.completions.create(
-                                    model="gpt-3.5-turbo",
-                                    messages=[{"role": "user", "content": f"Crie uma estratégia B2B para o cliente {nome} com status {status}."}]
-                                )
-                                st.markdown("##### 🚀 Estratégia VendaFlow AI")
-                                st.markdown(f'<div class="ai-box">{response.choices[0].message.content}</div>', unsafe_allow_html=True)
-                        else:
-                            st.warning("Adicione a chave OpenAI para liberar o Insight de IA.")
-                else:
-                    st.error("❌ Cliente não localizado no banco Velix-AI.")
-        except Exception as e:
-            st.error(f"Erro no banco de dados: {e}")
-
-st.markdown("<br><hr>", unsafe_allow_html=True)
-st.caption("© 2026 Velix-AI | Enterprise Solutions")
+elif choice == "Dashboard":
+    st.header("📈 Desempenho Geral")
+    vendas = list(collection.find())
+    total_faturado = sum(v['valor'] for v in vendas)
+    total_vendas = len(vendas)
+    
+    col1, col2 = st.columns(2)
+    col1.metric("Total Faturado", f"R$ {total_faturado:.2f}")
+    col2.metric("Quantidade de Vendas", total_vendas)
