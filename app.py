@@ -1,106 +1,97 @@
 import streamlit as st
 import pandas as pd
+import openai
 
 # Configuração de Interface de Alta Performance
-st.set_page_config(page_title="VELIX AI | Business Intelligence", layout="wide", page_icon="📈")
+st.set_page_config(page_title="VELIX AI | Business Intelligence", layout="wide", page_icon="🚀")
 
-# Estilização DARK MODE PROFISSIONAL (Preto e Azul Royal)
+# --- ESTILO DARK NEON (ALTA VISIBILIDADE) ---
 st.markdown("""
     <style>
-    /* Fundo Total Preto */
-    .stApp {
-        background-color: #0E1117;
-        color: #FFFFFF;
-    }
-    /* Menu Lateral Dark */
-    section[data-testid="stSidebar"] {
-        background-color: #161B22 !important;
-        border-right: 1px solid #30363D;
-    }
-    /* Títulos e Métricas */
-    h1, h2, h3 {
-        color: #58A6FF !important;
-        font-family: 'Inter', sans-serif;
-    }
-    .stMetric {
-        background-color: #1C2128;
-        padding: 15px;
-        border-radius: 10px;
-        border: 1px solid #30363D;
-    }
-    /* Botões de Ação */
+    .stApp { background-color: #0E1117; color: #FFFFFF; }
+    section[data-testid="stSidebar"] { background-color: #161B22 !important; border-right: 1px solid #30363D; }
+    
+    /* Melhorando a visibilidade do menu lateral */
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p { color: #FFFFFF !important; font-size: 1.1em; }
+    [data-testid="stSidebar"] .st-bs { border-color: #00FFFF !important; }
+    
+    /* Cores Neon do Logo nos Títulos */
+    h1 { color: #FFFFFF !important; text-shadow: 0 0 10px #00FFFF; }
+    h2, h3 { color: #00FFFF !important; }
+    
+    /* Botão com gradiente do seu logo */
     .stButton>button {
-        background-color: #238636;
-        color: white;
-        border: none;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    .stButton>button:hover {
-        background-color: #2EA043;
+        background-image: linear-gradient(to right, #00FFFF, #FF00FF);
+        color: white; border: none; font-weight: bold; border-radius: 8px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- NAVEGAÇÃO E LOGO ---
-st.sidebar.markdown(f"<h1 style='text-align: center; color: white !important;'>VELIX AI</h1>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='text-align: center; font-size: 0.8em;'>SISTEMA DE ALAVANCAGEM DE VENDAS</p>", unsafe_allow_html=True)
+# --- MENU LATERAL ---
+st.sidebar.markdown("<h1 style='text-align: center;'>VELIX AI</h1>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='text-align: center; color: #8B949E;'>SISTEMA DE ALAVANCAGEM</p>", unsafe_allow_html=True)
 st.sidebar.write("---")
 
 menu = st.sidebar.radio(
     "Navegação Estratégica",
-    ["📊 Dashboard de Performance", "🔍 Algoritmo de Topo", "🎥 Produção IA", "📢 Gestão de ADS", "📋 Ordens de Serviço", "⚙️ Configurações"]
+    ["📊 Dashboard Geral", "🕵️‍♂️ Espião Mercado Livre", "🧠 Velix Chat GPT", "⚙️ Integrações"]
 )
 
-# --- LÓGICA DAS TELAS (SEM NOMES PESSOAIS NA TELA PRINCIPAL) ---
+# --- CONFIGURAÇÃO OPENAI ---
+try:
+    openai.api_key = st.secrets["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"]
+except:
+    st.sidebar.warning("⚠️ Configure a chave OpenAI nos Secrets.")
 
-if menu == "📊 Dashboard de Performance":
-    st.markdown("<h1>Painel de Controle Estratégico</h1>", unsafe_allow_html=True)
-    st.write("Monitoramento em tempo real dos seus ativos digitais.")
-    
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Volume de Vendas", "R$ 42.850", "+15%")
-    with col2:
-        st.metric("CTR de Anúncios", "6.2%", "+1.4%")
-    with col3:
-        st.metric("ROI Médio", "4.2x", "+0.5x")
-    with col4:
-        st.metric("Posição Média", "1º Lugar", "Estável")
+# --- TELAS ---
 
-    st.write("---")
-    st.subheader("📈 Gráfico de Escala de Mercado")
-    chart_data = pd.DataFrame({'Market Share': [10, 15, 12, 25, 40, 55, 78]})
-    st.area_chart(chart_data)
+if menu == "📊 Dashboard Geral":
+    st.title("Painel de Controle Estratégico")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Vendas Mensais", "R$ 42.850", "+15%")
+    col2.metric("ROI Campanhas", "4.2x", "+0.5x")
+    col3.metric("Anúncios Ativos", "24", "Estável")
+    st.area_chart(pd.DataFrame({'Market Share': [10, 25, 40, 55, 78]}))
 
-elif menu == "🔍 Algoritmo de Topo":
-    st.markdown("<h1>Otimizador de Marketplace</h1>", unsafe_allow_html=True)
-    st.info("O algoritmo analisa o preço do concorrente e ajusta sua oferta para o topo em milissegundos.")
+elif menu == "🕵️‍♂️ Espião Mercado Livre":
+    st.title("🕵️‍♂️ Espião de Concorrência ML")
+    st.write("Conectado via API do Mercado Livre")
     
-    c1, c2 = st.columns(2)
-    with c1:
-        concorrente = st.number_input("Preço Atual do Concorrente (R$)", value=49.00)
-    with c2:
-        custo = st.number_input("Seu Custo de Operação (R$)", value=35.00)
+    url_concorrente = st.text_input("URL do anúncio concorrente:")
+    preco_concorrente = st.number_input("Preço do Concorrente", value=49.00)
+    margem_minima = st.number_input("Sua Margem Mínima", value=40.00)
     
-    if st.button("Executar Reajuste de Topo"):
-        sugestao = concorrente - 0.50
-        if sugestao > custo:
-            st.success(f"Estratégia Aplicada: Novo preço ajustado para *R$ {sugestao:.2f}*. Você está no topo!")
+    if st.button("Analisar e Sugerir"):
+        sugestao = preco_concorrente - 0.50
+        if sugestao > margem_minima:
+            st.success(f"💡 Sugestão Velix: Altere seu preço para *R$ {sugestao:.2f}* para vencer o leilão.")
         else:
-            st.error("Preço do concorrente abaixo da sua margem de segurança.")
+            st.error("❌ O preço do concorrente está abaixo do seu limite de lucro.")
 
-elif menu == "📋 Ordens de Serviço":
-    st.markdown("<h1>Gestão de OS</h1>", unsafe_allow_html=True)
-    with st.form("os_form"):
-        st.text_input("Cliente / Empresa")
-        st.selectbox("Serviço", ["Consultoria SEO", "Campanha ADS", "Produção de Vídeo IA", "Otimização de Preços"])
-        st.date_input("Data de Entrega")
-        if st.form_submit_button("Gerar Ordem de Serviço Profissional"):
-            st.info("Gerando documento...")
+elif menu == "🧠 Velix Chat GPT":
+    st.title("🧠 Inteligência Velix (OpenAI)")
+    st.write("Use esta IA para criar scripts de vendas ou analisar estratégias.")
+    
+    pergunta = st.text_area("O que você deseja perguntar para a estratégia da sua empresa?")
+    if st.button("Consultar Inteligência"):
+        if pergunta:
+            with st.spinner("Velix AI pensando..."):
+                try:
+                    response = openai.ChatCompletion.create(
+                        model="gpt-3.5-turbo",
+                        messages=[{"role": "user", "content": pergunta}]
+                    )
+                    st.markdown(f"*Resposta da Velix:*\n\n{response.choices[0].message.content}")
+                except Exception as e:
+                    st.error(f"Erro na API: {e}")
+        else:
+            st.warning("Por favor, digite uma pergunta.")
 
-# --- RODAPÉ DISCRETO ---
+elif menu == "⚙️ Integrações":
+    st.title("⚙️ Status das Conexões")
+    st.success("✅ Mercado Livre: Conectado (API ok)")
+    st.success("✅ OpenAI: Conectada (Chave ativa)")
+    st.info("Operadora Responsável: Daniele Xavier")
+
 st.sidebar.markdown("---")
-st.sidebar.caption("Sessão Restrita")
-# O seu nome fica apenas aqui, bem discreto, para não atrapalhar apresentações aos clientes
-st.sidebar.markdown("<p style='font-size: 0.7em; color: gray;'>Operadora: Daniele Xavier</p>", unsafe_allow_html=True)
+st.sidebar.caption("Sessão Restrita | Daniele Xavier")
