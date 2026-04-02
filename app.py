@@ -3,7 +3,7 @@ import requests
 from openai import OpenAI
 
 # --- CONFIGURAÇÃO DE INTEGRAÇÃO ---
-CLIENT_ID = "COLE_AQUI_O_SEU_ID_REAL" 
+CLIENT_ID = "8642953419393317" 
 REDIRECT_URI = "https://velix-ai.streamlited.app/" 
 
 # Configuração de Interface
