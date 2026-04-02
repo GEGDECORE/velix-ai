@@ -1,12 +1,12 @@
 import streamlit as st
 
-# ID REAL DA DANIELE
+# CONFIGURAÇÕES REAIS
 CLIENT_ID = "8642953419393317" 
 REDIRECT_URI = "https://velix-ai.streamlit.app/" 
 
-st.set_page_config(page_title="VELIX AI | Business Intelligence", layout="wide")
+st.set_page_config(page_title="VELIX AI | Performance", layout="wide")
 
-# DESIGN NEON PROFISSIONAL
+# DESIGN QUE VOCÊ GOSTA
 st.markdown("""
     <style>
     .stApp { background-color: #0E1117; color: #FFFFFF !important; }
@@ -22,7 +22,7 @@ st.markdown("""
 st.sidebar.markdown("<h1 style='text-align: center;'>VELIX AI</h1>", unsafe_allow_html=True)
 st.sidebar.write("---")
 
-menu = st.sidebar.radio("Navegação", ["📊 Dashboard", "💬 Velix Chat GPT", "⚙️ Integrações"])
+menu = st.sidebar.radio("Menu", ["📊 Dashboard", "💬 Velix Chat GPT", "⚙️ Integrações"])
 
 if menu == "⚙️ Integrações":
     st.title("🔗 Integração Mercado Livre")
@@ -31,8 +31,8 @@ if menu == "⚙️ Integrações":
 
 elif menu == "💬 Velix Chat GPT":
     st.title("🧠 Inteligência Velix")
-    st.info("Pronta para uso com seus créditos OpenAI.")
+    st.write("Pronta para uso com seus novos créditos.")
 
 else:
-    st.title("📊 Dashboard")
-    st.metric("Performance", "R$ 42.850", "+15%")
+    st.title("📊 Painel de Performance")
+    st.metric("Resultado Mensal", "R$ 42.850", "+15%")
