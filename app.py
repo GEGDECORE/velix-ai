@@ -121,3 +121,42 @@ if executar:
 
 st.markdown("<br><hr>", unsafe_allow_html=True)
 st.caption("© 2026 Velix-AI | Enterprise Solutions")
+import streamlit as st
+from openai import OpenAI
+
+# 🔑 SUA CHAVE OPENAI
+client = OpenAI(api_key="SUA_CHAVE_AQUI")
+
+st.markdown("---")
+st.title("🤖 Velix AI - Criador de Anúncios Inteligentes")
+
+produto = st.text_input("Nome do produto")
+detalhes = st.text_area("Detalhes do produto")
+
+if st.button("🚀 Gerar Anúncio com IA"):
+    if produto:
+        with st.spinner("Gerando anúncio profissional..."):
+            prompt = f"""
+            Crie um anúncio profissional para Mercado Livre.
+
+            Produto: {produto}
+            Detalhes: {detalhes}
+
+            Gere:
+            - Título chamativo
+            - Descrição persuasiva
+            - Lista de benefícios
+            - Palavras-chave SEO
+            """
+
+            resposta = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}]
+            )
+
+            resultado = resposta.choices[0].message.content
+
+            st.success("✅ Anúncio pronto!")
+            st.write(resultado)
+    else:
+        st.warning("Digite o nome do produto")
