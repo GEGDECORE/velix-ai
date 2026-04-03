@@ -155,6 +155,7 @@ if st.button("🚀 Gerar Anúncio com IA"):
             )
 
             resultado = resposta.choices[0].message.content
+            from modules.ai_engine import gerar_roteiro
 
             st.success("✅ Anúncio pronto!")
             st.write(resultado)
