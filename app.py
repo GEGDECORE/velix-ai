@@ -130,7 +130,7 @@ import streamlit as st
 from openai import OpenAI
 
 # 🔑 SUA CHAVE OPENAI
-client = OpenAI(api_key="SUA_CHAVE_AQUI")
+client = OpenAI(api_key=")
 
 st.markdown("---")
 st.title("🤖 Velix AI - Criador de Anúncios Inteligentes")
