@@ -6,32 +6,34 @@ import requests
 
 def criar_produto_ml(token, titulo, preco):
 
-headers = {  
-    "Authorization": f"Bearer {token}",  
-    "Content-Type": "application/json"  
-}  
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
 
-body = {  
-    "title": titulo,  
-    "category_id": "MLB3530",  # exemplo (você pode melhorar depois)  
-    "price": float(preco),  
-    "currency_id": "BRL",  
-    "available_quantity": 10,  
-    "buying_mode": "buy_it_now",  
-    "listing_type_id": "gold_special",  
-    "condition": "new",  
-    "pictures": [  
-        {"source": "https://http2.mlstatic.com/D_NQ_NP_2X_12345.jpg"}  
-    ]  
-}  
+    body = {
+        "title": titulo,
+        "category_id": "MLB3530",
+        "price": float(preco),
+        "currency_id": "BRL",
+        "available_quantity": 10,
+        "buying_mode": "buy_it_now",
+        "listing_type_id": "gold_special",
+        "condition": "new",
+        "pictures": [
+            {
+                "source": "https://http2.mlstatic.com/D_NQ_NP_2X_12345.jpg"
+            }
+        ]
+    }
 
-resp = requests.post(  
-    "https://api.mercadolibre.com/items",  
-    headers=headers,  
-    json=body  
-)  
+    resp = requests.post(
+        "https://api.mercadolibre.com/items",
+        headers=headers,
+        json=body
+    )
 
-return resp.json()
+    return resp.json()
 
 import streamlit as st
 
