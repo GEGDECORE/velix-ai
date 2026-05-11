@@ -6,7 +6,7 @@ import requests
 
 def criar_produto_ml(token, titulo, preco):
 
-    headers = {
+headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
